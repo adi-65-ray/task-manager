@@ -7,35 +7,35 @@
 #include "taskMgr.h"
 #endif
 
-#ifdef LED_TEST
-const uint8_t LED_PIN = PICO_DEFAULT_LED_PIN;
-#endif
-
 int main() 
 {
     stdio_init_all();
+    sleep_ms(1000);
 
     #ifdef LED_TEST
     printf("led init\n");
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-    gpio_put(LED_PIN, 0);
+    gpio_init(PICO_DEFAULT_LED_PIN);
+    gpio_set_dir(PICO_DEFAULT_LED_PIN, GPIO_OUT);
+    gpio_put(PICO_DEFAULT_LED_PIN, 0);
 
     while (true) 
     {
-        gpio_put(LED_PIN, 1);
+        gpio_put(PICO_DEFAULT_LED_PIN, 1);
         printf("LED on\n");
         sleep_ms(500);
-        gpio_put(LED_PIN, 0);
+        gpio_put(PICO_DEFAULT_LED_PIN, 0);
         printf("LED off\n");
         sleep_ms(500);
     }
     #else
-    sleep_ms(1000);
+    
     printf("Number of tasks %d\n", TOTAL_TASKS);
+    printf("Wait for 10 sec...\n");
+    sleep_ms(10000);
     
     printf("task initialising\n");
     task_init_all();
+    vTaskCoreAffinitySet(NULL, (1 << 0));
     vTaskStartScheduler();
     task_deinit_all();
     
