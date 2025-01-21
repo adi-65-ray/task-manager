@@ -9,7 +9,7 @@
 
 
 #define THREAD_LOCAL
-//#define HEALTH_MONITOR 
+#define HEALTH_MONITOR 
 
 // Task configuration structure
 typedef struct TaskConfig {

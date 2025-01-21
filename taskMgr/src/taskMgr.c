@@ -12,7 +12,7 @@
 static TaskConfig taskConfigs[TOTAL_TASKS] = {
     TASK_LIST
     #ifdef HEALTH_MONITOR
-    {"eHEALTH_MONITOR",     1,      1024,       health_monitor_init,    health_monitor_main,        health_monitor_deinit,      NULL},
+    {"eHEALTH_MONITOR",     1,      2048,       health_monitor_init,    health_monitor_main,        health_monitor_deinit,      NULL},
     #endif
 };
 
@@ -28,9 +28,9 @@ void task_init_all()
     #endif
 
     stdio_init_all();
-    appASSERT((TOTAL_TASKS >= sizeof(taskConfigs) / sizeof(TaskConfig)), "Task count mismatch");
     sleep_ms(1000);
-    
+
+    appASSERT((TOTAL_TASKS >= sizeof(taskConfigs) / sizeof(TaskConfig)), "Task count mismatch");
     for (int i = 0; i < TOTAL_TASKS; i++) 
     {
         if (taskConfigs[i].initFunction != NULL) {
@@ -50,7 +50,7 @@ void task_init_all()
         taskConfigs[i].priority, \
         &(taskConfigs[i].task_handle)\
         );
-
+        vTaskCoreAffinitySet(taskConfigs[i].task_handle, (1 << 1));
         if (task_err == pdPASS) {
             // Store the configuration pointer in the task's local storage
             vTaskSetThreadLocalStoragePointer(taskConfigs[i].task_handle, 0, (void*)index);

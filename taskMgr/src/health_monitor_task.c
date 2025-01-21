@@ -47,7 +47,7 @@ void vApplicationIdleHook(void) {
     // It can be used to put the CPU in a low power state.
     fflush(stdout);
     idle_start_tick = xTaskGetTickCount();
-    printf("Idle hook\n");
+    //printf("Idle hook\n");
 }
 
 void vApplicationTickHook(void) {
@@ -74,7 +74,7 @@ void health_monitor_main(void* args) {
         printf("Health monitor task.......\n");
         min_heap_size = xPortGetMinimumEverFreeHeapSize();
         printf("Total idle time: %d ticks\n", total_idle_ticks);
-        printf("Minimum heap size: %d bytes\n", min_heap_size);
+        printf("Minimum heap size free: %d bytes\n", min_heap_size);
         for (int i = 0; i < TOTAL_TASKS; i++) {
             task_handle = (TaskHandle_t)get_task_handle((TaskConfigIndex*)&i);
             if (task_handle != NULL) {
