@@ -7,7 +7,7 @@
 #include "taskMgr.h"
 
 static TickType_t idle_start_tick;
-static int total_idle_ticks;
+static uint32_t total_idle_ticks;
 
 void health_monitor_init() {
     printf("health monitor init\n");
@@ -46,17 +46,18 @@ void vApplicationIdleHook(void) {
     // This hook is called when the scheduler has no tasks to run.
     // It can be used to put the CPU in a low power state.
     fflush(stdout);
-    idle_start_tick = xTaskGetTickCount();
+    //idle_start_tick = xTaskGetTickCount();
     //printf("Idle hook\n");
 }
 
 void vApplicationTickHook(void) {
     // This hook is called from the tick interrupt.
     // It can be used to perform periodic processing.
+    /*
     if (idle_start_tick != 0) {
-        total_idle_ticks += (xTaskGetTickCount() - idle_start_tick);
+        total_idle_ticks += ((uint32_t)xTaskGetTickCount() - idle_start_tick);
         idle_start_tick = 0;
-    }
+    }*/
     //printf("Tick hook\n");
 }
 
@@ -72,8 +73,13 @@ void health_monitor_main(void* args) {
     while (1)
     {
         printf("Health monitor task.......\n");
+        vTaskDelay(pdMS_TO_TICKS(1000));
         min_heap_size = xPortGetMinimumEverFreeHeapSize();
-        printf("Total idle time: %d ticks\n", total_idle_ticks);
+        /*
+        uint32_t total_ticks = (uint32_t) xTaskGetTickCount();
+        uint32_t cpu_usage = (uint32_t) (((total_ticks) - total_idle_ticks)/total_ticks) * 100;
+        printf("Total cpu time: %d \n", cpu_usage);
+        */
         printf("Minimum heap size free: %d bytes\n", min_heap_size);
         for (int i = 0; i < TOTAL_TASKS; i++) {
             task_handle = (TaskHandle_t)get_task_handle((TaskConfigIndex*)&i);
@@ -81,6 +87,6 @@ void health_monitor_main(void* args) {
                 monitor_tasks(task_handle);
             }
         }
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        
     }
 }
